@@ -15,6 +15,11 @@ const forms = () => {
     fail: "assets/img/fail.png",
   };
 
+  const path = {
+    designer: "assets/server.php",
+    question: "assets/question.php",
+  };
+
   const postData = async (url, data) => {
     document.querySelector(".status").textContent = message.loading;
 
@@ -62,19 +67,21 @@ const forms = () => {
       statusMessage.appendChild(textMessage);
 
       const formData = new FormData(item);
-      if (item.getAttribute("data-calc") === "end") {
-        for (let key in state) {
-          formData.append(key, state[key]);
-        }
-      }
-      console.log(formData);
+      let api;
+      item.closest(".popup-design")
+        ? (api = path.designer)
+        : (api = path.question);
+      console.log(api);
 
-      postData("https://1b1f6eff2a76cf15.mokky.dev/inputs", formData)
+      postData(api, formData)
         .then((res) => {
-          statusMessage.textContent = message.success;
+          console.log(res);
+          statusImg.setAttribute("src", message.ok);
+          textMessage.textContent = message.success;
         })
         .catch(() => {
-          statusMessage.textContent = message.failure;
+          statusImg.setAttribute("src", message.fail);
+          textMessage.textContent = message.failure;
         })
         .finally(() => {
           clearInputs();
